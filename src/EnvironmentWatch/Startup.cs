@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using EnvironmentWatch.Migrations;
+using EnvironmentWatch.Models;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +29,9 @@ namespace EnvironmentWatch
         {
             // Add framework services.
             services.AddMvc();
+
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<EnvWatchContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +58,8 @@ namespace EnvironmentWatch
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            InitializeDatabase.SeedData(app);
         }
     }
 }
