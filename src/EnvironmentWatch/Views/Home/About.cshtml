@@ -1,7 +1,53 @@
-﻿@{
-    ViewData["Title"] = "About";
-}
-<h2>@ViewData["Title"].</h2>
-<h3>@ViewData["Message"]</h3>
+﻿@{ ViewData["Title"] = "About"; }
 
-<p>Use this area to provide additional information.</p>
+<h3>About Environment Watch</h3>
+
+<p>
+    Environment Watch is a simple MVC application that displays temperature, humidity, and
+    light level data sent to this site from IoT devices. At the time this was published there
+    was only one device that implemented this system: an ESP8266 module or the Adafruit Huzzah.
+    Likely I'll be testing with the Raspberry Pi Zero next.
+</p>
+
+<p>
+    While there are no crucial problems I am attempting to solve with this, there are some low level
+    issues we've run into in our building.
+</p>
+<ul>
+    <li>
+        The temperature in our office is inconsistent between floors or even in different areas on
+        the same floor.
+    </li>
+    <li>
+        The lights are not always turned off for the night. We don't have automatic lights, so it's
+        up to the last person leaving to make sure they are turned off. Which they aren't always.
+    </li>
+</ul>
+<p>
+    Both problems seemed like they'd be easier to understand with more data and from multiple locations.
+    When were the lights turned off and where? What was the temperature on the second floor of the
+    south side of the building during that one hot day in July?
+</p>
+<p>
+    As such I had the idea to create multiple, inexpensive, devices that could all report to a single
+    web application. This application then could be used to aggregate or view specific info and help
+    better understand the problems and make decisions.
+    <br /><br />
+    Not sure how humidity gets into the equation, but might be helpful with some rooms, or even with
+    different times of the year.
+</p>
+
+<p>
+    The site currently includes no security, but only allows display of aggregate info, either
+    by device, or of all devices. It does allow upload of data by device, but requires a known ID for
+    the device before logging anything.
+</p>
+
+<p>
+    Shown below is an image of the ESP8266/Huzzah setup as a
+    <a href="http://fritzing.org/home/" target="_blank">Fritzing</a> diagram.
+</p>
+
+<p>
+    <img src="~/images/Environment Watch - Breadboard Setup.svg" />
+</p>

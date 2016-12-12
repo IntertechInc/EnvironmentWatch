@@ -1,0 +1,30 @@
+﻿@model EnvironmentWatch.Models.LocationHandler
+
+@{ ViewData["Title"] = "Change Location"; }
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    Device ID: @Model.ReportingDeviceId <br />
+    Device Type: @Model.DeviceTypeName <br />
+    New Location: @Model.LocationName
+</p>
+
+<p>
+    @if (Model.Success)
+    {
+        <div class="success">Location was successfully changed.</div>
+    }
+    else
+    {
+        <div class="has-error">
+            Error changing location:
+            <br />
+            @Model.Message
+        </div>
+    }
+</p>
+
+<p>
+    @Html.ActionLink("Back to home/device view page", "Index", @Model.ReportingDeviceId)
+</p>
