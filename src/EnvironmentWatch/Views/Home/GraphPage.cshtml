@@ -1,0 +1,48 @@
+﻿@model EnvironmentWatch.Models.DeviceInfo
+
+@{ ViewData["Title"] = "Graph Page"; }
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        <p>
+            Alternate graph page to test out ideas using Google Charts
+        </p>
+    </div>
+    <div class="col-md-3">
+        <div class="col-sm-3">
+            <strong>Device:</strong>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="dropdown">
+                <button class="btn btn-success dropdown-toggle" type="button" id="devicesMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    @Model.TypeName
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="devicesMenu">
+                    @foreach (var item in Model.Devices)
+                    {
+                        <li><a href="@Url.Action("Index", new {id = item.ReportingDeviceId})">@item.Name</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br/><br/>
+
+<div class="row">
+    <div id="chart_div" style="width: 750px; height: 550px"></div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['line'] });
+        google.charts.setOnLoadCallback(function() { drawChart(@Model.ReportingDeviceId); });
+    </script>
+}
+

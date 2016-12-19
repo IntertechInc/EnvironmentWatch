@@ -15,4 +15,11 @@ namespace EnvironmentWatch.Models
         public virtual ICollection<Measurement> Measurements { get; set; }
     }
 
+
+    public enum MeasureTypeEnum
+    {
+        Temperature = 1,
+        Humidity = 2,
+        Light = 3
+    }
 }

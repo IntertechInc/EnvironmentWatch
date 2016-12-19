@@ -2,48 +2,18 @@
 
 @{ ViewData["Title"] = "Home"; }
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    google.charts.load('current', { 'packages': ['line'] });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart()
-    {
-        var data = new google.visualization.DataTable();
-
-        data.addColumn('string', '');
-        data.addColumn('number', 'Temp F');
-        data.addColumn('number', 'Humidity');
-        data.addColumn('number', 'Light');
-
-        // Create and populate the data table
-        var hours = [@Html.Raw(Model.HoursDelim)];
-        var temps = [@Model.TempDelim];
-        var humids = [@Model.HumidDelim];
-        var lights = [@Model.LightDelim];
-
-        for (i = 0; i < hours.length; i++) {
-            data.addRow([hours[i].toString(), temps[i], humids[i], lights[i]]);
-        }
-
-        var options = { chart: { title: ''} };
-        var chart = new google.charts.Line(document.getElementById('chart_div'));
-        chart.draw(data, options);
-    }16
-</script>
-
 <div class="jumbotron" style="padding-top: 10px; padding-bottom: 10px;">
     <h3>Environment Watch</h3>
     <p>A simple example of IoT for tracking environmental data over time.</p>
 </div>
 
 <div class="row">
-
-    <div class="col-md-3">
-        <p><strong>View device:</strong></p>
-        <div class="col-sm-4">
+    <div class="col-lg-3">
+        
+        <div class="form-group" style="margin-bottom: 20px">
+            <label for="devicesMenu">Current device:</label>
             <div class="dropdown">
-                <button class="btn btn-success dropdown-toggle" type="button" id="devicesMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <button class="btn btn-success dropdown-toggle" type="button" id="devicesMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 185px">
                     @Model.TypeName
                     <span class="caret"></span>
                 </button>
@@ -55,14 +25,11 @@
                 </ul>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <p><strong>Set or add reporting location:</strong></p>
-        <div class="row">
-
-            <div class="dropdown col-sm-6">
-                <button class="btn btn-info dropdown-toggle" type="button" id="devicesMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <div class="form-group" style="margin-bottom: 20px">
+            <label for="locationsMenu">Set location:</label> <a href="@Url.Action("AddLocation", "Home")">Add</a>
+            <div class="dropdown">
+                <button class="btn btn-info dropdown-toggle" type="button" id="locationsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 185px">
                     @Model.LocationName
                     <span class="caret"></span>
                 </button>
@@ -73,77 +40,40 @@
                     }
                 </ul>
             </div>
+        </div>
 
-            <div class="col-sm-6" style="text-align: left">
-                <a class="btn btn-primary active" href="@Url.Action("AddLocation", "Home")">Add</a>
+        <div class="form-group" style="margin-bottom: 35px">
+            <label>Last local IP:</label>
+            <div class="dropdown">
+                <a href="http://@Model.LocalIp" target="_blank" class="btn btn-default" role="button" style="width: 185px;">@Model.LocalIp</a>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <p><strong>As of @Model.LastSet.DateOnlyString @Model.LastSet.TimeOnlyString:</strong></p>
-        <div class="row" style="margin-top: 16px;">
-            <div class="col-sm-4"><span class="label label-primary" style="padding: 12px">@Model.LastSet.TempString F</span></div>
-            <div class="col-sm-4"><span class="label label-danger" style="padding: 12px">@Model.LastSet.HumidString %H</span></div>
-            <div class="col-sm-4"><span class="label label-warning" style="padding: 12px">@Model.LastSet.LightString %L</span></div>
+        <div class="form-group">
+            <label>Last measurements:</label><br/>
+            <div class="dropdown">
+                <div class="alert alert-info" style="width: 185px; margin-bottom: 15px; padding: 5px; text-align: center">@Model.LastSet.TempString &deg; fahrenheit</div>
+            </div>
+            <div class="dropdown">
+                <div class="alert alert-danger" style="width: 185px; margin-bottom: 15px; padding: 5px; text-align: center">@Model.LastSet.HumidString % humidity</div>
+            </div>
+            <div class="dropdown">
+                <div class="alert alert-warning" style="width: 185px; margin-bottom: 15px; padding: 5px; text-align: center">@Model.LastSet.LightString % light</div>
+            </div>
+            <span style="font-style: italic">As of @Model.LastSet.DateOnlyString @Model.LastSet.TimeOnlyString</span>
         </div>
-    </div>
 
-    <div class="col-md-3">
-        <p><strong>Last local IP:</strong></p>
-        <p>
-            <a href="http://@Model.LocalIp" target="_blank">@Model.LocalIp</a>
-        </p>
     </div>
-
+    <div class="col-lg-9">
+        <div id="chart_div" style="width: 100%; min-height: 500px"></div>
+    </div>
 </div>
 
-<br /><br />
-
-<div class="row">
-    <div class="col-md-6">
-        <p><strong>Last 8 hours of measurments averaged by hour</strong></p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Location</th>
-                    <th>Temp</th>
-                    <th>Humidity</th>
-                    <th>Light</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.RecentMeasurements != null && Model.RecentMeasurements.Any())
-            {
-                    @for (var i = 0; i < 8; i++)
-                {
-                        <tr>
-                            <td nowrap>@Model.RecentMeasurements[i].DateOnlyString</td>
-                            <td nowrap>@Model.RecentMeasurements[i].HourOnlyString</td>
-                            <td nowrap>@Model.RecentMeasurements[i].LocationName</td>
-                            <td style="text-align: center" nowrap>@Model.RecentMeasurements[i].TempString</td>
-                            <td style="text-align: center" nowrap>@Model.RecentMeasurements[i].HumidString</td>
-                            <td style="text-align: center" nowrap>@Model.RecentMeasurements[i].LightString</td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="6">
-                            <strong>No recent data available for device</strong>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <div class="col-md-6">
-        <p><strong>Last 24 hours of measurements averaged by hour</strong></p>
-        <div id="chart_div" style="width: 550px; height: 330px"></div>
-    </div>
-
-</div>
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['line'] });
+        google.charts.setOnLoadCallback(function () { drawChart(@Model.ReportingDeviceId); });
+        $(window).resize(function () { drawChart(@Model.ReportingDeviceId); });
+    </script>
+}

@@ -12,8 +12,10 @@ namespace EnvironmentWatch.Models
 
         public string DateOnlyString => MeasuredDate?.ToString("yyyy-MM-dd") ?? string.Empty;
         public string TimeOnlyString => MeasuredDate?.ToString("hh:mm:ss tt") ?? string.Empty;
-        public string HourOnlyString => MeasuredDate?.ToString("htt") ?? string.Empty;
-        public string ShortDayTimeString => MeasuredDate?.ToString("ddd h tt") ?? string.Empty;
+
+        public string GoogleDate => (MeasuredDate.HasValue)
+            ? string.Format("Date({0})", MeasuredDate.Value.ToString("yyyy,M,d,H,m,s,f"))
+            : string.Empty;
 
         public string TempString => (Temperature != null) ? Temperature.Value.ToString("###.0") : "0.0";
         public string HumidString => (Humidity != null) ? Humidity.Value.ToString("###.0") : "0.0";
